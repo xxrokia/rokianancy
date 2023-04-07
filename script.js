@@ -35,22 +35,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 //COMPARING CITIES
-const options = {
+const cityAPIOptions = {
   method: 'GET',
   headers: {
-    'X-RapidAPI-Key': 'c5188d0cc2msh6835a437888ccd3p106986jsnc573c2c6ea38',
+    'X-RapidAPI-Key': '1527ce7ef5msh3b38e93718db3fcp1dab49jsn13cb79abcfac',
     'X-RapidAPI-Host': 'cost-of-living-and-prices.p.rapidapi.com'
   }
 };
 
 // Fetch the list of cities
-fetch('https://cost-of-living-and-prices.p.rapidapi.com/cities', options)
+fetch('https://cost-of-living-and-prices.p.rapidapi.com/cities', cityAPIOptions)
+// ...
+
   .then(response => response.json())
   .then(data => {
     // Populate the city search input fields with the list of cities
-    const city1Input = document.getElementById('city1');
-    const city2Input = document.getElementById('city2');
-    data.forEach(city => { 
+    const city1Input = document.createElement('select');
+    city1Input.setAttribute('id', 'city1');
+    const city2Input = document.createElement('select');
+    city2Input.setAttribute('id', 'city2');
+    
+    const form = document.getElementById('search-bar');
+    form.appendChild(city1Input);
+    form.appendChild(city2Input);
+    console.log(data);
+    
+    data.cities.forEach(city => { 
       const option1 = document.createElement('option');
       const option2 = document.createElement('option');
       option1.text = city.city_name;
@@ -59,6 +69,7 @@ fetch('https://cost-of-living-and-prices.p.rapidapi.com/cities', options)
       city2Input.add(option2);
     });
   })
+
   .catch(err => console.error(err));
 
 // Add event listener to compare button
@@ -69,8 +80,8 @@ compareBtn.addEventListener('click', () => {
 
   // Fetch cost of living data for both cities
   Promise.all([
-    fetch(`https://cost-of-living-and-prices.p.rapidapi.com/prices?city_name=${city1Name}&country_name=`, options),
-    fetch(`https://cost-of-living-and-prices.p.rapidapi.com/prices?city_name=${city2Name}&country_name=`, options)
+    fetch(`https://cost-of-living-and-prices.p.rapidapi.com/prices?city_name=${city1Name}&country_name=`, cityAPIOptions),
+    fetch(`https://cost-of-living-and-prices.p.rapidapi.com/prices?city_name=${city2Name}&country_name=`, cityAPIOptions)
   ])
     .then(responses => Promise.all(responses.map(response => response.json())))
     .then(data => {
@@ -98,26 +109,23 @@ compareBtn.addEventListener('click', () => {
         ]
       };
 
-      const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          yAxes: [
-            {
-              ticks: {
-                beginAtZero: true
+      new Chart(chartCanvas, {
+        type: 'bar',
+        data: chartData,
+        chartOptions: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: true
+                }
               }
-            }
-          ]
+            ]
+          }
         }
-      };
-
-      new Chart
-      type: 'bar',
-        data; chartData,
-        options; chartOptions
       });
     })
     .catch(err => console.error(err));
-
-
+});

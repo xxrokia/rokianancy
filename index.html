@@ -127,17 +127,19 @@
 		</div>
 		
 		<script>
-			const options = {
-				method: 'GET',
-				headers: {
-					'X-RapidAPI-Key': 'c5188d0cc2msh6835a437888ccd3p106986jsnc573c2c6ea38',
-					'X-RapidAPI-Host': 'country-facts.p.rapidapi.com'
-				}
-			};
+			//GETTING BACKGROUND INFORMATION ABOUT COUNTRIES
+const countryAPIOptions = {
+  method: 'GET',
+  headers: {
+    'X-RapidAPI-Key': 'c5188d0cc2msh6835a437888ccd3p106986jsnc573c2c6ea38',
+    'X-RapidAPI-Host': 'country-facts.p.rapidapi.com'
+  }
+};
 
-			function getCountryInfo() {
+function getCountryInfo() {
+  fetch('https://country-facts.p.rapidapi.com/all', countryAPIOptions)
+  // ...
 
-				fetch('https://country-facts.p.rapidapi.com/all', options)
 					.then(response => response.json())
 					.then(response => {
 						// Process the data and update the HTML elements
@@ -186,7 +188,7 @@
 		<h1>Cost of Living Comparison</h1>
 		<section>
 		  <h2>Compare the Cost of Living in Different Capitals</h2>
-		  <div class="search-bar">
+		  <div class="search-bar" id="search-bar">
 			<label for="city1">City 1:</label>
 			<input type="text" id="city1" name="city1" placeholder="Enter a city name...">
 			<label for="city2">City 2:</label>
@@ -222,7 +224,7 @@
 	  </div>
 	  
 	  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
-	  <script type="text/javascript" src="script.js"></script>
+	  <!-- <script type="text/javascript" src="script.js"></script> -->
 
 	<div id="about" class="page">
 		<h1>About</h1>
@@ -361,7 +363,9 @@
 
 </section>
 </div>
+<script type="text/javascript" src="compare.js"></script>
 <script type="text/javascript" src="script.js"></script>
+
 </body>
 
 </html>
