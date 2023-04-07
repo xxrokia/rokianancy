@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>CAPITA</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+	<header>
+		<nav>
+			<ul>
+				<li><a href="#home">Home</a></li>
+				<li><a href="#capitals">Capitals</a></li>
+				<li><a href="#compare">Compare</a></li>
+				<li><a href="#about">About</a></li>
+				<li><a href="#contact">Contact Us</a></li>
+			</ul>
+		</nav>
+	</header>
+	<div id="home" class="page">
+		<h1>CAPITA</h1>
+		<section id="hero">
+			<h2>Discover the world's most fascinating cities and compare cost of living with CAPITA</h2>
+			<div class="container">
+				<div class="vertical-center">
+
+					<a href="#capitals" class="btn">Get Started</a>
+				</div>
+			</div>
+		</section>
+	</div>
+
+	<style>
+		.container {
+			height: 300px;
+			position: relative;
+			border: 3px solid green;
+		}
+
+		.vertical-center {
+			margin: 0;
+			position: absolute;
+			top: 70%;
+			left: 50%;
+			-ms-transform: translate(-50%, -50%);
+			transform: translate(-50%, -50%);
+		}
+
+		#hero {
+			min-height: calc(100vh - 200px);
+			/* 100% viewport height - header height */
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+
+		#hero h2 {
+			margin-bottom: 10px;
+			font-size: 28px;
+			line-height: 4.0;
+			text-align: center;
+		}
+
+
+		#hero .btn {
+			display: inline-block;
+			padding: 25px 60px;
+			font-size: 40px;
+			font-weight: 600;
+			line-height: 1.2;
+			text-align: center;
+			text-transform: uppercase;
+			color: #fff;
+			background-color: #020910;
+			border: none;
+			border-radius: 800px;
+			transition: all 0.3s ease;
+		}
+
+		#hero .btn:hover {
+			background-color: #0c979e;
+		}
+	</style>
+
+
+	</div>
+
+	<body>
+		<div id="capitals" class="page">
+			<h1>Capital Cities</h1>
+			<section>
+				<h2>Select a Country</h2>
+				<select id="countries" onchange="getCountryInfo()">
+					<option value="">Select a country</option>
+					<option value="Afghanistan">Afghanistan</option>
+					<option value="Australia">Australia</option>
+					<option value="Brazil">Brazil</option>
+					<option value="Canada">Canada</option>
+					<option value="China">China</option>
+					<option value="Egypt">Egypt</option>
+					<option value="France">France</option>
+					<option value="Germany">Germany</option>
+					<option value="India">India</option>
+					<option value="Iran">Iran</option>
+					<option value="Italy">Italy</option>
+					<option value="Japan">Japan</option>
+					<option value="Mexico">Mexico</option>
+					<option value="Nigeria">Nigeria</option>
+					<option value="Russia">Russia</option>
+					<option value="Saudi Arabia">Saudi Arabia</option>
+					<option value="South Africa">South Africa</option>
+					<option value="Spain">Spain</option>
+					<option value="United Kingdom">United Kingdom</option>
+					<option value="United States">United States</option>
+				</select>
+
+				<h2>Background Information</h2>
+				<div id="background-info">
+					<!-- Country information will be displayed here -->
+				</div>
+				<h2>Location on Map</h2>
+				<div id="map-canvas"></div>
+			</section>
+		</div>
+		
+		<script>
+			const options = {
+				method: 'GET',
+				headers: {
+					'X-RapidAPI-Key': 'c5188d0cc2msh6835a437888ccd3p106986jsnc573c2c6ea38',
+					'X-RapidAPI-Host': 'country-facts.p.rapidapi.com'
+				}
+			};
+
+			function getCountryInfo() {
+
+				fetch('https://country-facts.p.rapidapi.com/all', options)
+					.then(response => response.json())
+					.then(response => {
+						// Process the data and update the HTML elements
+						const countryInfoDiv = document.querySelector('#background-info');
+						const countriesSelect = document.querySelector('#countries');
+						const country = countriesSelect.value;
+						const countryData = response;
+						countryData.forEach(element => {
+							if (element.name.common == country) {
+								countryInfoDiv.innerHTML = `
+									<p>Name: ${element.name.common}</p>
+									<p>Capital: ${element.capital}</p>
+									<p>Population: ${element.population}</p>   
+									<p>Location: Latitude => ${element.latlng[0]}  Longitude => ${element.latlng[1]}</p>                                                                                                                                                                            												}</p>
+									<img src="${element.flag}" alt="${element.name.common} Flag">
+    
+								`;
+								
+								const mapCanvas = document.querySelector('#map-canvas');
+								const mapOptions = {
+									center: { lat: element.latlng[0], lng: element.latlng[1] },
+									zoom: 8
+								};
+								const map = new google.maps.Map(mapCanvas, mapOptions);
+								const marker = new google.maps.Marker({
+									position: { lat: element.latlng[0], lng: element.latlng[1] },
+									map: map,
+									title: element.capital
+								});
+							}
+						});
+
+
+
+					})
+					.catch(err => console.error(err));
+			}
+		</script>
+
+	</body>
+
+
+	</div>
+	
+	<div id="compare" class="page">
+		<h1>Cost of Living Comparison</h1>
+		<section>
+		  <h2>Compare the Cost of Living in Different Capitals</h2>
+		  <div class="search-bar">
+			<label for="city1">City 1:</label>
+			<input type="text" id="city1" name="city1" placeholder="Enter a city name...">
+			<label for="city2">City 2:</label>
+			<input type="text" id="city2" name="city2" placeholder="Enter a city name...">
+			<button id="compare-btn">COMPARE</button>
+
+			<style>
+			#compare-btn {
+            font-size: 24px;
+            padding: 10px 20px;
+            background-color: #292626 ;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+           }
+
+           #compare-btn:hover {
+           background-color: #064e4b;
+           }
+			</style>
+			
+		  </div>
+		  <div class="comparison-result">
+			<p id="city1-result"></p>
+			<p id="city2-result"></p>
+		  </div>
+		  <div id="chart-container">
+			<canvas id="chart"></canvas>
+			
+		  </div>
+		</section>
+	  </div>
+	  
+	  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+	  <script type="text/javascript" src="script.js"></script>
+
+	<div id="about" class="page">
+		<h1>About</h1>
+		<section>
+			<h2>The Rationale for Our Site</h2>
+			<p>This site dedicated to helping you explore the capital cities of the world and
+				compare their cost of living. We believe providing you with such info, will
+				help you make more informed decisions about travel, relocation, and more.</p>
+			<!DOCTYPE html>
+			<html>
+
+			<head>
+				<title>About Us | CAPITA</title>
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<link rel="stylesheet" type="text/css" href="about.css">
+				<link rel="stylesheet" type="text/css" href="style.css">
+			</head>
+
+			<body>
+				<header>
+					<nav>
+						<ul>
+							<li><a href="#home">Home</a></li>
+							<li><a href="#capitals">Capitals</a></li>
+							<li><a href="#compare">Compare</a></li>
+							<li><a href="#about">About</a></li>
+							<li><a href="#contact">Contact Us</a></li>
+						</ul>
+					</nav>
+				</header>
+				<div id="about-page" class="page">
+					<h1>ROKIA</h1>
+					<section>
+						<h2>Meet the Developer</h2>
+
+						<div id="developer-bio">
+							<img src="/Users/mac/Desktop/WEB COURSEWORK II/images/Rokia developer.jpeg" alt="Developer"
+								class="developer-img">
+							<p><strong>BACKGROUND:</strong> Rokia is a Computing student at ALU,originally from
+								Nairobi, Kenya who is passionate about game development, cybersecurity and artificial
+								intelligence. Traveling peaked her interest in exploring capital cities and dissecting
+								cost of living.</p>
+
+						</div>
+					</section>
+				</div>
+				<script type="text/javascript" src="script.js"></script>
+			</body>
+
+			</html>
+		</section>
+	</div>
+	<div id="contact" class="page">
+		<h1>Contact Us</h1>
+		<section>
+			<h2>Get in Touch with Us</h2>
+			<!-- Add your contact form or information here -->
+			<style>
+				/* Styling for the form */
+				body {
+					font-family: Arial, sans-serif;
+					background-color: #f2f2f2;
+					margin: 0;
+					padding: 0;
+				}
+
+				form {
+					margin: 20px auto;
+					max-width: 2000px;
+					max-height: 400px;
+					padding: 20px;
+					background-color: #020202;
+					border: 1px solid #ddd;
+					box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+					color: #ffffff;
+					opacity: 0.8;
+				}
+
+				label {
+					display: block;
+					margin-bottom: 8px;
+				}
+
+				input[type="text"],
+				input[type="email"],
+				textarea {
+					width: 100%;
+					padding: 8px;
+					border: 1px solid #ddd;
+					border-radius: 4px;
+					box-sizing: border-box;
+					margin-bottom: 16px;
+				}
+
+				button[type="submit"] {
+					background-color: #333;
+					color: #fff;
+					padding: 8px 16px;
+					border: none;
+					border-radius: 4px;
+					cursor: pointer;
+				}
+
+				button[type="submit"]:hover {
+					background-color: #666;
+				}
+
+				@media screen and (min-width: 768px) {
+
+					/* Styling for tablets and larger screens */
+					form {
+						margin: 40px auto;
+						padding: 40px;
+					}
+				}
+			</style>
+			</head>
+
+			<body>
+
+				<form method="post" action="process-form.php">
+					<label for="name">Name:</label>
+					<input type="text" id="name" name="name" required>
+
+					<label for="email">Email:</label>
+					<input type="email" id="email" name="email" required>
+
+					<label for="question">Question:</label>
+					<textarea id="question" name="question" required></textarea>
+
+					<button type="submit">Submit</button>
+				</form>
+			</body>
+
+</html>
+
+</section>
+</div>
+<script type="text/javascript" src="script.js"></script>
+</body>
+
+</html>
